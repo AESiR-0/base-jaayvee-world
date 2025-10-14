@@ -8,10 +8,10 @@ export type Venture = {
 
 export const ventures: Venture[] = [
   { id: 'talaash', name: 'Talaash By Jaayvee', logoUrl: '/static/png with tagline white/talaash logo with tagline-03.png', internalPath: '/ease/talaash' },
+  { id: 'atrractive', name: 'Attractive By Jaayvee', logoUrl: '/static/png with tagline white/clothing-03.png', href: 'https://attractive.thejaayveeworld.com' },
   { id: 'tours and travels', name: 'Travel and Tour Operators', logoUrl: '/static/png with tagline white/travel and tours-03.png', href: 'https://travel.thejaayveeworld.com' },
-  { id: 'clothing', name: 'Clothing By Jaayvee', logoUrl: '/static/png with tagline white/clothing-03.png', href: 'https://clothing.thejaayveeworld.com' },
-  { id: 'realestate', name: 'Real Estate By Jaayvee', logoUrl: '/static/png with tagline white/real estate-03.png', href: 'https://realestate.thejaayveeworld.com' },
-  { id: 'events', name: 'Events Planners By Jaayvee', logoUrl: '/static/png with tagline white/event planner-03.png', href: 'https://events.thejaayveeworld.com' },
-  { id: 'atrracted', name: 'Attracted By Jaayvee', logoUrl: '/static/png with tagline white/clothing-03.png', href: 'https://attracted.thejaayveeworld.com' },
+  { id: 'clothing', name: 'Jaayvee Clothing', logoUrl: '/static/png with tagline white/clothing-03.png', href: 'https://clothing.thejaayveeworld.com' },
+  { id: 'realestate', name: 'Jaayvee Real Estate', logoUrl: '/static/png with tagline white/real estate-03.png', href: 'https://realestate.thejaayveeworld.com' },
+  { id: 'events', name: 'Jaayvee Events Planners', logoUrl: '/static/png with tagline white/event planner-03.png', href: 'https://events.thejaayveeworld.com' },
 
 ];
