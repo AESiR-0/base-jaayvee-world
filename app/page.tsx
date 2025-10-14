@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ventures } from '@/lib/ventures';
 import { useEffect } from 'react';
 import { initializeReferralTracking, getReferralForApi, generateReferralUrl } from '@/lib/referral';
+import Image from 'next/image';
 
 export default function Home() {
   useEffect(() => {
@@ -23,10 +24,12 @@ export default function Home() {
         <div className="profile-avatar">
           <div className="profile-avatar-inner">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
+            <Image
               src="/static/logo(icon) white/jaayvee world icon-03.png" 
               alt="The Jaayvee World" 
               className="w-full h-full object-contain"
+              width={80}
+              height={80}
             />
           </div>
         </div>
@@ -46,40 +49,10 @@ export default function Home() {
               const { ref } = getReferralForApi();
               const referralUrl = generateReferralUrl(v.href, ref);
               window.open(referralUrl, '_blank', 'noopener,noreferrer');
+            } else if (v.internalPath) {
+              window.location.href = v.internalPath;
             }
           };
-
-          if (v.internalPath) {
-            return (
-              <Link 
-                key={v.id} 
-                href={v.internalPath} 
-                className="link-item glass-card"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={v.logoUrl} 
-                  alt={v.name} 
-                  className="link-logo" 
-                />
-                <span className="link-text">{v.name}</span>
-                <div className="link-arrow">
-                  <svg 
-                    width="20" 
-                    height="20" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <path d="M7 17L17 7M17 7H7M17 7V17" />
-                  </svg>
-                </div>
-              </Link>
-            );
-          }
 
           return (
             <button
@@ -88,10 +61,12 @@ export default function Home() {
               className="link-item glass-card"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
+              <Image
                 src={v.logoUrl} 
                 alt={v.name} 
-                className="link-logo" 
+                className="" 
+                width={80}
+                height={80}
               />
               <span className="link-text">{v.name}</span>
               <div className="link-arrow">

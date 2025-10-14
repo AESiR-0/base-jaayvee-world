@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const BASE = process.env.TALAASH_API_BASE || 'https://talaash.thejaayveeworld.com';
-const ENDPOINT = process.env.TALAASH_EVENTS_ENDPOINT || '/api/getRecentEvents';
+const ENDPOINT = process.env.TALAASH_EVENTS_ENDPOINT || '/api/events';
 
 /**
  * Proxies Talaash events API and normalizes the payload:
@@ -17,6 +17,8 @@ export async function GET(req: Request) {
     const remoteUrl = new URL(ENDPOINT, BASE);
     if (refCookie) remoteUrl.searchParams.set('ref', refCookie);
 
+    console.log('Fetching events from:', remoteUrl.toString());
+    
     const res = await fetch(remoteUrl.toString(), {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
@@ -24,10 +26,12 @@ export async function GET(req: Request) {
     });
 
     if (!res.ok) {
+      console.error('Remote API failed:', res.status, res.statusText);
       return NextResponse.json({ events: [], error: 'REMOTE_FAILED' }, { status: 200 });
     }
 
     const payload = await res.json().catch(() => ({} as any));
+    console.log('Raw API response:', JSON.stringify(payload, null, 2));
 
     // Accept common shapes: { events: [...] }, { data: [...] }, or [...]
     const raw: any[] =
@@ -35,15 +39,39 @@ export async function GET(req: Request) {
       Array.isArray(payload?.events) ? payload.events :
       Array.isArray(payload?.data) ? payload.data : [];
 
-    const events = raw.map((e: any, i: number) => ({
-      id: e.id ?? e.eventId ?? i,
-      title: e.title ?? e.name ?? 'Untitled Event',
-      startDate: e.startDate ?? e.startsAt ?? e.start_time ?? e.start ?? e.date ?? null,
-      endDate: e.endDate ?? e.endsAt ?? e.end_time ?? e.end ?? null,
-      bannerUrl: e.bannerUrl ?? e.banner ?? e.imageUrl ?? e.cover ?? null,
-      venue: e.venue ?? e.venueName ?? e.location ?? null,
-    })).filter(x => x.startDate);
+    const events = raw.map((e: any, i: number) => {
+      // Handle venue object - extract name or format as string
+      let venue = null;
+      if (e.venue) {
+        if (typeof e.venue === 'string') {
+          venue = e.venue;
+        } else if (typeof e.venue === 'object' && e.venue.name) {
+          venue = e.venue.name;
+        } else if (typeof e.venue === 'object') {
+          // Format venue object as readable string
+          const parts = [];
+          if (e.venue.name) parts.push(e.venue.name);
+          if (e.venue.city) parts.push(e.venue.city);
+          if (e.venue.state) parts.push(e.venue.state);
+          venue = parts.join(', ');
+        }
+      } else if (e.venueName) {
+        venue = e.venueName;
+      } else if (e.location) {
+        venue = e.location;
+      }
 
+      return {
+        id: e.id ?? e.eventId ?? i,
+        title: e.title ?? e.name ?? 'Untitled Event',
+        startDate: e.startDate ?? e.startsAt ?? e.start_time ?? e.start ?? e.date ?? null,
+        endDate: e.endDate ?? e.endsAt ?? e.end_time ?? e.end ?? null,
+        bannerUrl: e.bannerUrl ?? e.banner ?? e.imageUrl ?? e.cover ?? null,
+        venue: venue,
+      };
+    }).filter(x => x.startDate);
+
+    console.log('Processed events:', JSON.stringify(events, null, 2));
     return NextResponse.json({ events });
   } catch {
     return NextResponse.json({ events: [], error: 'UNEXPECTED' }, { status: 200 });

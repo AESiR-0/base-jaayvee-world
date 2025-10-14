@@ -57,6 +57,7 @@ async function getEvents(): Promise<{ events: Event[] }> {
     }
     
     const data = await res.json();
+    console.log('Fetched events from API:', data);
     return { events: data.events?.length > 0 ? data.events : dummyEvents };
   } catch (error) {
     console.warn('API fetch error, using dummy data:', error);
