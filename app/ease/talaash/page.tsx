@@ -12,6 +12,7 @@ type Event = {
   endDate?: string | null;
   bannerUrl?: string | null;
   venue?: string | null;
+  slug?: string | null;
 };
 
 const dummyEvents: Event[] = [
@@ -21,7 +22,8 @@ const dummyEvents: Event[] = [
     startDate: "2024-02-15T10:00:00Z",
     endDate: "2024-02-15T18:00:00Z",
     bannerUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop",
-    venue: "Convention Center, Mumbai"
+    venue: "Convention Center, Mumbai",
+    slug: "tech-innovation-summit-2024"
   },
   {
     id: 2,
@@ -29,7 +31,8 @@ const dummyEvents: Event[] = [
     startDate: "2024-02-20T14:00:00Z",
     endDate: "2024-02-20T17:00:00Z",
     bannerUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop",
-    venue: "Innovation Hub, Bangalore"
+    venue: "Innovation Hub, Bangalore",
+    slug: "startup-pitch-competition"
   },
   {
     id: 3,
@@ -37,7 +40,8 @@ const dummyEvents: Event[] = [
     startDate: "2024-02-25T09:30:00Z",
     endDate: "2024-02-25T16:30:00Z",
     bannerUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop",
-    venue: "Online Event"
+    venue: "Online Event",
+    slug: "digital-marketing-workshop"
   }
 ];
 
@@ -80,9 +84,11 @@ export default function TalaashPage() {
     });
   }, []);
   
-  const handleBookNow = (eventId: string | number) => {
+  const handleBookNow = (event: Event) => {
     const { ref } = getReferralForApi();
-    const bookingUrl = generateReferralUrl(`https://talaash.thejaayveeworld.com/events/${eventId}`, ref, eventId.toString());
+    // Use slug if available, otherwise fallback to ID
+    const eventSlug = (event as any).slug || event.id;
+    const bookingUrl = generateReferralUrl(`https://talaash.thejaayveeworld.com/events/${eventSlug}`, ref, eventSlug.toString());
     window.open(bookingUrl, '_blank', 'noopener,noreferrer');
   };
 
@@ -164,7 +170,7 @@ export default function TalaashPage() {
               
               {/* Button - Fixed at bottom */}
               <button
-                onClick={() => handleBookNow(ev.id)}
+                onClick={() => handleBookNow(ev)}
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg mt-auto"
               >
                 Book Now

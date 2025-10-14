@@ -68,6 +68,7 @@ export async function GET(req: Request) {
         endDate: e.endDate ?? e.endsAt ?? e.end_time ?? e.end ?? null,
         bannerUrl: e.bannerUrl ?? e.banner ?? e.imageUrl ?? e.cover ?? null,
         venue: venue,
+        slug: e.slug ?? e.eventSlug ?? e.urlSlug ?? null,
       };
     }).filter(x => x.startDate);
 
