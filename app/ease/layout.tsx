@@ -17,7 +17,12 @@ export default function EaseLayout({ children }: { children: React.ReactNode }) 
         <div className="mb-6 text-center">
           <div className="profile-avatar mx-auto mb-3" style={{ width: '80px', height: '80px' }}>
             <div className="profile-avatar-inner" style={{ fontSize: '1.5rem' }}>
-              TJW
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src="/static/logo(icon) white/jaayvee world icon-03.png" 
+                alt="The Jaayvee World" 
+                className="w-full h-full object-contain"
+              />
             </div>
           </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent">

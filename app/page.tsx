@@ -22,7 +22,12 @@ export default function Home() {
       <div className="profile-section">
         <div className="profile-avatar">
           <div className="profile-avatar-inner">
-            TJW
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/static/logo(icon) white/jaayvee world icon-03.png" 
+              alt="The Jaayvee World" 
+              className="w-full h-full object-contain"
+            />
           </div>
         </div>
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent">
