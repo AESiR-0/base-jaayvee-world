@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { auth } from '@/lib/firebaseClient'
+import { auth, verifyOTP, createRecaptchaVerifier, clearRecaptchaVerifier, signInWithPhoneNumber } from '@/lib/firebaseClient'
+import { useFirebase } from '@/lib/useFirebase'
 import StatusCard from '@/components/common/StatusCard'
 
 interface MerchantPanelProps {
@@ -27,6 +28,16 @@ export default function MerchantPanel({ merchantId }: MerchantPanelProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isToggling, setIsToggling] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  
+  // Authentication states
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [otp, setOtp] = useState('')
+  const [verificationId, setVerificationId] = useState('')
+  const [authStep, setAuthStep] = useState<'phone' | 'otp'>('phone')
+  const [authError, setAuthError] = useState('')
+  const [isAuthLoading, setIsAuthLoading] = useState(false)
+  
+  const { isInitialized: isFirebaseReady, error: firebaseError } = useFirebase()
 
   useEffect(() => {
     checkAuthentication()
@@ -79,6 +90,113 @@ export default function MerchantPanel({ merchantId }: MerchantPanelProps) {
     }
   }
 
+  const sendOTP = async (phoneNumber: string) => {
+    try {
+      console.log('🔍 Sending OTP to:', phoneNumber);
+      
+      // Clear any existing reCAPTCHA
+      clearRecaptchaVerifier('merchant-recaptcha-container');
+      console.log('🧹 Cleared reCAPTCHA');
+      
+      const recaptchaVerifier = createRecaptchaVerifier('merchant-recaptcha-container');
+      console.log('🔐 Created reCAPTCHA verifier');
+      
+      console.log('📞 Calling signInWithPhoneNumber...');
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+      console.log('✅ OTP sent successfully!', confirmationResult.verificationId);
+      
+      return {
+        success: true,
+        verificationId: confirmationResult.verificationId
+      };
+    } catch (error: any) {
+      console.error('❌ Send OTP error:', error);
+      
+      // Handle specific Firebase errors
+      if (error.code === 'auth/too-many-requests') {
+        return {
+          success: false,
+          error: 'Too many OTP requests. Please wait 1-2 hours before trying again.'
+        };
+      } else if (error.code === 'auth/invalid-phone-number') {
+        return {
+          success: false,
+          error: 'Invalid phone number format. Please use international format like +91 9876543210'
+        };
+      } else if (error.code === 'auth/captcha-check-failed') {
+        return {
+          success: false,
+          error: 'Security verification failed. Please try again.'
+        };
+      } else if (error.code === 'auth/network-request-failed') {
+        return {
+          success: false,
+          error: 'Network error. Please check your internet connection and try again.'
+        };
+      }
+      
+      return {
+        success: false,
+        verificationId: '',
+        error: error.message || 'Failed to send OTP. Please try again.'
+      };
+    }
+  };
+
+  const handlePhoneSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!isFirebaseReady) {
+      setAuthError('Firebase is not ready. Please wait and try again.');
+      return;
+    }
+    
+    setIsAuthLoading(true);
+    setAuthError('');
+
+    try {
+      const result = await sendOTP(phoneNumber);
+      
+      if (result.success && result.verificationId) {
+        setVerificationId(result.verificationId);
+        setAuthStep('otp');
+        console.log('✅ OTP sent successfully');
+      } else {
+        setAuthError(result.error || 'Failed to send OTP. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Phone authentication error:', error);
+      setAuthError(error.message || 'Failed to send OTP. Please try again.');
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuthLoading(true);
+    setAuthError('');
+
+    try {
+      const result = await verifyOTP(verificationId, otp);
+      
+      if (result.success && result.user) {
+        // Store user data
+        const token = await result.user.getIdToken();
+        await loadMerchantData(token);
+        setIsAuthenticated(true);
+        console.log('✅ Authentication complete');
+      } else {
+        setAuthError(result.error || 'Authentication failed. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Authentication error:', error);
+      setAuthError(error.message || 'Authentication failed. Please try again.');
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
   const toggleShopStatus = async () => {
     if (!profile) return
 
@@ -109,14 +227,6 @@ export default function MerchantPanel({ merchantId }: MerchantPanelProps) {
     }
   }
 
-  const handleLogin = async () => {
-    // In a real implementation, this would trigger Firebase phone auth
-    // For now, we'll simulate authentication
-    setIsAuthenticated(true)
-    const mockToken = 'mock-token'
-    await loadMerchantData(mockToken)
-  }
-
   if (isLoading) {
     return (
       <div className="p-6 md:p-10">
@@ -131,17 +241,99 @@ export default function MerchantPanel({ merchantId }: MerchantPanelProps) {
   if (!isAuthenticated) {
     return (
       <div className="p-6 md:p-10">
-        <div className="bg-white border border-[#00719C] rounded-xl p-6 text-center">
-          <h1 className="text-2xl font-semibold text-[#0C0C0C] mb-4">Merchant Login</h1>
-          <p className="text-gray-600 mb-6">
+        <div className="bg-white border border-[#00719C] rounded-xl p-6">
+          <h1 className="text-2xl font-semibold text-[#0C0C0C] mb-4 text-center">Merchant Login</h1>
+          <p className="text-gray-600 mb-6 text-center">
             Please log in to access your merchant dashboard.
           </p>
-          <button
-            onClick={handleLogin}
-            className="px-6 py-2 bg-[#00719C] text-white rounded-lg hover:bg-[#E8F6FA] hover:text-[#00719C]"
-          >
-            Login with Phone Number
-          </button>
+
+          {!isFirebaseReady && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+              <p className="text-sm text-yellow-800">
+                ⏳ Initializing Firebase... Please wait.
+              </p>
+            </div>
+          )}
+
+          {firebaseError && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+              <p className="text-sm text-red-800">
+                ❌ Firebase Error: {firebaseError}
+              </p>
+            </div>
+          )}
+
+          {authStep === 'phone' ? (
+            <form onSubmit={handlePhoneSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-[#0C0C0C]">
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  required
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="+91 9876543210"
+                  className="mt-1 block w-full px-4 py-3 border border-[#00719C] rounded-lg focus:ring-2 focus:ring-[#00719C] focus:border-[#00719C]"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isAuthLoading || !isFirebaseReady}
+                className="w-full px-6 py-2 bg-[#00719C] text-white rounded-lg hover:bg-[#E8F6FA] hover:text-[#00719C] disabled:opacity-50"
+              >
+                {isAuthLoading ? 'Sending OTP...' : !isFirebaseReady ? 'Initializing...' : 'Send OTP'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleOtpSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="otp" className="block text-sm font-medium text-[#0C0C0C]">
+                  Enter OTP
+                </label>
+                <input
+                  id="otp"
+                  type="text"
+                  required
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="123456"
+                  className="mt-1 block w-full px-4 py-3 border border-[#00719C] rounded-lg focus:ring-2 focus:ring-[#00719C] focus:border-[#00719C]"
+                />
+                <p className="mt-2 text-sm text-gray-600">
+                  OTP sent to {phoneNumber}
+                </p>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setAuthStep('phone')}
+                  className="flex-1 py-3 px-4 border border-[#00719C] text-[#00719C] rounded-lg hover:bg-[#E8F6FA]"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={isAuthLoading}
+                  className="flex-1 py-3 px-4 bg-[#00719C] text-white rounded-lg hover:bg-[#E8F6FA] hover:text-[#00719C] disabled:opacity-50"
+                >
+                  {isAuthLoading ? 'Verifying...' : 'Verify OTP'}
+                </button>
+              </div>
+            </form>
+          )}
+
+          {authError && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-sm text-red-600">{authError}</p>
+            </div>
+          )}
+
+          <div id="merchant-recaptcha-container" className="flex justify-center mt-4"></div>
         </div>
       </div>
     )

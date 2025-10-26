@@ -17,8 +17,6 @@ export async function GET(req: Request) {
     const remoteUrl = new URL(ENDPOINT, BASE);
     if (refCookie) remoteUrl.searchParams.set('ref', refCookie);
 
-    console.log('Fetching events from:', remoteUrl.toString());
-    
     const res = await fetch(remoteUrl.toString(), {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
@@ -26,12 +24,10 @@ export async function GET(req: Request) {
     });
 
     if (!res.ok) {
-      console.error('Remote API failed:', res.status, res.statusText);
       return NextResponse.json({ events: [], error: 'REMOTE_FAILED' }, { status: 200 });
     }
 
     const payload = await res.json().catch(() => ({} as any));
-    console.log('Raw API response:', JSON.stringify(payload, null, 2));
 
     // Accept common shapes: { events: [...] }, { data: [...] }, or [...]
     const raw: any[] =
@@ -72,7 +68,6 @@ export async function GET(req: Request) {
       };
     }).filter(x => x.startDate);
 
-    console.log('Processed events:', JSON.stringify(events, null, 2));
     return NextResponse.json({ events });
   } catch {
     return NextResponse.json({ events: [], error: 'UNEXPECTED' }, { status: 200 });
