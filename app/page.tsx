@@ -255,6 +255,25 @@ export default function Home() {
                   </svg>
                 </div>
               </button>
+              <button
+                onClick={() => handleAffiliateClick('https://affiliates.thejaayveeworld.com')}
+                className="w-full glass-card p-6 text-left hover:bg-white/10 transition-all duration-300 group"
+              >
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-white mb-1">Affiliate Program</h4>
+                    <p className="text-gray-300 text-sm">Earn by referring new users to the jaayvee world</p>
+                  </div>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 group-hover:text-white transition-colors">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                  </svg>
+                </div>
+              </button>
             </div>
           </div>
         </div>
