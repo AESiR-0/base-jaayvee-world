@@ -42,7 +42,7 @@ export default function Home() {
             />
           </div>
         </div>
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-2 text-white ">
           The Jaayvee World
         </h1>
         <p className="text-lg text-gray-300 mb-6">
