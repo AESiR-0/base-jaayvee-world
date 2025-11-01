@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
-const BASE = process.env.TALAASH_API_BASE || 'https://talaash.thejaayveeworld.com';
-const ENDPOINT = process.env.TALAASH_EVENTS_ENDPOINT || '/api/events';
+// Fetch from jaayvee-world events API
+const BASE = process.env.JAAYVEE_WORLD_API_BASE || process.env.NEXT_PUBLIC_BASE_URL || 'https://thejaayveeworld.com';
+const ENDPOINT = process.env.JAAYVEE_WORLD_EVENTS_ENDPOINT || '/api/events';
 
 /**
  * Proxies Talaash events API and normalizes the payload:
@@ -24,12 +25,14 @@ export async function GET(req: Request) {
     });
 
     if (!res.ok) {
+      console.warn(`Failed to fetch from ${remoteUrl.toString()}: ${res.status}`);
       return NextResponse.json({ events: [], error: 'REMOTE_FAILED' }, { status: 200 });
     }
 
     const payload = await res.json().catch(() => ({} as any));
 
     // Accept common shapes: { events: [...] }, { data: [...] }, or [...]
+    // jaayvee-world returns { success: true, data: [...] }
     const raw: any[] =
       Array.isArray(payload) ? payload :
       Array.isArray(payload?.events) ? payload.events :
@@ -62,7 +65,7 @@ export async function GET(req: Request) {
         title: e.title ?? e.name ?? 'Untitled Event',
         startDate: e.startDate ?? e.startsAt ?? e.start_time ?? e.start ?? e.date ?? null,
         endDate: e.endDate ?? e.endsAt ?? e.end_time ?? e.end ?? null,
-        bannerUrl: e.bannerUrl ?? e.banner ?? e.imageUrl ?? e.cover ?? null,
+        bannerUrl: e.bannerUrl ?? e.banner ?? e.imageUrl ?? e.cover ?? null, // jaayvee-world uses 'banner'
         venue: venue,
         slug: e.slug ?? e.eventSlug ?? e.urlSlug ?? null,
       };
