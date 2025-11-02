@@ -1,7 +1,10 @@
 import './globals.css';
 import RefCapture from '@/components/RefCapture';
+import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
+import type { Metadata } from 'next';
 
-export const metadata = { 
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://thejaayveeworld.com'),
   title: 'The Jaayvee World',
   description: 'Explore our ventures across different domains - Building Connections, Creating Memories',
   icons: {
@@ -10,18 +13,19 @@ export const metadata = {
     apple: '/favicon.ico',
   },
   manifest: '/manifest.json',
-  themeColor: '#1e3a8a',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Jaayvee World',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#1e3a8a',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -36,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-paper text-ink">
         <RefCapture />
         {children}
+        <PWAInstallPrompt />
       </body>
     </html>
   );
