@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-// Fetch from jaayvee-world events API
-const BASE = process.env.JAAYVEE_WORLD_API_BASE || process.env.NEXT_PUBLIC_BASE_URL || 'https://thejaayveeworld.com';
+// Fetch from jaayvee-world (talaash) events API
+const BASE = process.env.JAAYVEE_WORLD_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || 'https://talaash.thejaayveeworld.com';
 const ENDPOINT = process.env.JAAYVEE_WORLD_EVENTS_ENDPOINT || '/api/events';
 
 /**

@@ -48,7 +48,12 @@ const dummyEvents: Event[] = [
 
 async function getEvents(): Promise<{ events: Event[] }> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/ease/talaash/api/getEvents`, { 
+    // Use the proxy API route which fetches from talaash API
+    const apiBaseUrl = typeof window !== 'undefined' 
+      ? window.location.origin 
+      : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+    
+    const res = await fetch(`${apiBaseUrl}/ease/talaash/api/getEvents`, { 
       cache: 'no-store',
       headers: {
         'Accept': 'application/json',
