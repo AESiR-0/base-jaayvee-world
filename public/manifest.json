@@ -1,0 +1,42 @@
+{
+  "name": "Base Jaayvee World - Portal Hub",
+  "short_name": "Jaayvee Base",
+  "description": "Base portal for Jaayvee World platforms including Talaash event discovery.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["entertainment", "lifestyle", "social"],
+  "icons": [
+    {
+      "src": "/static/logos/talaash/talaash_icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/logos/talaash/talaash_icon_192.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Talaash",
+      "short_name": "Talaash",
+      "description": "Access Talaash event portal",
+      "url": "/ease/talaash",
+      "icons": [
+        {
+          "src": "/static/logos/talaash/talaash_fav.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
+
