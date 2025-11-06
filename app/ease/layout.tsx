@@ -16,7 +16,7 @@ export default function EaseLayout({ children }: { children: React.ReactNode }) 
 
   // Generate venture site URL (e.g., talaash.thejaayvee.world)
   const getVentureSiteUrl = (ventureId: string): string => {
-    return `https://${ventureId}.thejaayvee.world`;
+    return `https://${ventureId}.thejaayveeworld.com`;
   };
 
   return (
