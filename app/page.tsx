@@ -53,7 +53,12 @@ export default function Home() {
       {/* Links Container */}
       <div className="links-container">
         {ventures.map(v => {
+          const isComingSoon = v.comingSoon !== false && v.id !== 'talaash';
+          
           const handleClick = () => {
+            if (isComingSoon) {
+              return; // Disable click for coming soon items
+            }
             if (v.href) {
               const { ref } = getReferralForApi();
               const referralUrl = generateReferralUrl(v.href, ref);
@@ -67,7 +72,8 @@ export default function Home() {
             <button
               key={v.id}
               onClick={handleClick}
-              className="link-item glass-card"
+              disabled={isComingSoon}
+              className={`link-item glass-card ${isComingSoon ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <Image
@@ -78,20 +84,26 @@ export default function Home() {
                 height={80}
               />
               <span className="link-text">{v.name}</span>
-              <div className="link-arrow">
-                <svg 
-                  width="20" 
-                  height="20" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                >
-                  <path d="M7 17L17 7M17 7H7M17 7V17" />
-                </svg>
-              </div>
+              {isComingSoon ? (
+                <div className="link-arrow text-yellow-400">
+                  <span className="text-xs font-semibold">Coming Soon</span>
+                </div>
+              ) : (
+                <div className="link-arrow">
+                  <svg 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                  </svg>
+                </div>
+              )}
             </button>
           );
         })}

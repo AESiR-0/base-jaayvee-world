@@ -45,8 +45,13 @@ export default function EaseLayout({ children }: { children: React.ReactNode }) 
           {ventures.map(v => {
             // Check if this venture is the selected/current one
             const isSelectedVenture = v.internalPath && pathname.startsWith(v.internalPath);
+            const isComingSoon = v.comingSoon !== false && v.id !== 'talaash';
 
             const handleClick = (e: React.MouseEvent) => {
+              if (isComingSoon) {
+                e.preventDefault();
+                return; // Disable click for coming soon items
+              }
               if (v.href) {
                 const { ref } = getReferralForApi();
                 const referralUrl = generateReferralUrl(v.href, ref);
@@ -75,7 +80,23 @@ export default function EaseLayout({ children }: { children: React.ReactNode }) 
                 );
               }
 
-              // Otherwise, use Link for internal navigation
+              // Otherwise, use Link for internal navigation (only if not coming soon)
+              if (isComingSoon) {
+                return (
+                  <div
+                    key={v.id}
+                    className="flex items-center gap-3 rounded-xl border border-white/10 p-3 glass-card opacity-60 cursor-not-allowed"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={v.logoUrl} alt={v.name} className="h-8 w-8 object-contain" />
+                    <div className="flex-1">
+                      <span className="text-sm font-semibold text-white">{v.name}</span>
+                      <span className="block text-xs text-yellow-400 mt-0.5">Coming Soon</span>
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <Link 
                   key={v.id} 
@@ -93,11 +114,21 @@ export default function EaseLayout({ children }: { children: React.ReactNode }) 
               <button
                 key={v.id}
                 onClick={handleClick}
-                className="flex items-center gap-3 rounded-xl border border-white/10 p-3 glass-card hover:bg-white/10 transition-all duration-300"
+                disabled={isComingSoon}
+                className={`flex items-center gap-3 rounded-xl border border-white/10 p-3 glass-card transition-all duration-300 ${
+                  isComingSoon 
+                    ? 'opacity-60 cursor-not-allowed' 
+                    : 'hover:bg-white/10'
+                }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={v.logoUrl} alt={v.name} className="h-8 w-8 object-contain" />
-                <span className="text-sm font-semibold text-white">{v.name}</span>
+                <div className="flex-1 text-left">
+                  <span className="text-sm font-semibold text-white block">{v.name}</span>
+                  {isComingSoon && (
+                    <span className="text-xs text-yellow-400 block mt-0.5">Coming Soon</span>
+                  )}
+                </div>
               </button>
             );
           })}
