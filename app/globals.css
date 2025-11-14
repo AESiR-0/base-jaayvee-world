@@ -219,10 +219,22 @@ html {
 
 .links-container {
   width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .links-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .links-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 .link-item {

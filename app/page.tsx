@@ -85,8 +85,8 @@ export default function Home() {
               />
               <span className="link-text">{v.name}</span>
               {isComingSoon ? (
-                <div className="link-arrow text-yellow-400">
-                  <span className="text-xs font-semibold">Coming Soon</span>
+                <div className="link-arrow opacity-100">
+                  <span className="bg-white text-black text-xs font-semibold px-2 py-1 rounded-md">Coming Soon</span>
                 </div>
               ) : (
                 <div className="link-arrow">
