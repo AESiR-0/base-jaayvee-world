@@ -294,6 +294,12 @@ html {
   transform: translateX(0);
 }
 
+/* Coming Soon badge should always be visible */
+.link-arrow.opacity-100 {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
 /* Floating particles animation */
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
