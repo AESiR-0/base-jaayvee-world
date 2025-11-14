@@ -70,7 +70,7 @@ export default function RefundPolicy() {
                 To request a refund, please follow these steps:
               </p>
               <ol className="list-decimal list-inside text-gray-300 mb-4 space-y-2">
-                <li>Contact us at contact@talaashbyjaayvee.com with your booking details</li>
+                <li>Contact us at talaash@thejaayveeworld.com with your booking details</li>
                 <li>Include your order number and reason for refund</li>
                 <li>Provide any supporting documentation if applicable</li>
                 <li>We will review your request within 2-3 business days</li>
@@ -140,7 +140,7 @@ export default function RefundPolicy() {
               </p>
               <div className="bg-gray-800 p-4 rounded-lg">
                 <p className="text-gray-300">
-                  <strong>Email:</strong> contact@talaashbyjaayvee.com<br/>
+                  <strong>Email:</strong> talaash@thejaayveeworld.com<br/>
                   <strong>Phone:</strong> +91 9879143185<br/>
                   <strong>Address:</strong> 1310 Phoenix Tower, Near Commerce Six Road Metro Station,<br/>
                   Vijay Cross Road, Ahmedabad, Gujarat - 380014<br/>

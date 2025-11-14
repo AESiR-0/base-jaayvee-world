@@ -130,7 +130,7 @@ export default function TermsAndConditions() {
               </p>
               <div className="bg-gray-800 p-4 rounded-lg">
                 <p className="text-gray-300">
-                  <strong>Email:</strong> contact@talaashbyjaayvee.com<br/>
+                  <strong>Email:</strong> talaash@thejaayveeworld.com<br/>
                   <strong>Phone:</strong> +91 9879143185<br/>
                   <strong>Address:</strong> 1310 Phoenix Tower, Near Commerce Six Road Metro Station,<br/>
                   Vijay Cross Road, Ahmedabad, Gujarat - 380014

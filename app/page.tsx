@@ -152,7 +152,7 @@ export default function Home() {
           </div>
           
           <div className="text-xs text-gray-500">
-            <p>© 2024 The Jaayvee World. All rights reserved.</p>
+            <p>© 2025 The Jaayvee World. All rights reserved.</p>
             <p className="mt-1">talaash@thejaayveeworld.com | +91 9879143185</p>
           </div>
         </div>
