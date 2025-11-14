@@ -153,7 +153,7 @@ export default function Home() {
           
           <div className="text-xs text-gray-500">
             <p>© 2024 The Jaayvee World. All rights reserved.</p>
-            <p className="mt-1">contact@talaashbyjaayvee.com | +91 9879143185</p>
+            <p className="mt-1">talaash@thejaayveeworld.com | +91 9879143185</p>
           </div>
         </div>
       </footer>
